@@ -1,0 +1,29 @@
+{% extends 'tasks/base.html' %}
+
+{% block content %}
+
+    <form method="POST" style="margin-bottom: 20px;">
+        {% csrf_token %}
+        {{ form.title}}
+        <button type="submit">Add Task</button>
+    </form>
+
+    {% if tasks %}
+        {% for task in tasks %}
+            <div class="task">
+                <form action="{% url 'toggle_task' task.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="checkbox" onchange="this.form.submit()">
+                        {% if task.completed %}checked{% endif %}
+                </form>
+                <span class="{% if task.completed %}completed{% endif %}">{{ task.title }}</span>
+                <form action="{% url 'delete_task' task.id %}" method="post">
+                    {% csrf_token %}
+                    <button class="delete-btn">X</button>
+                </form>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No tasks available. Add one!</p>
+    {% endif %}
+{% endblock %}
